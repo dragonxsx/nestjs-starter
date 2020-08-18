@@ -1,9 +1,10 @@
 import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
-import {ConfigModule} from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -15,9 +16,10 @@ import { PostsModule } from './posts/posts.module';
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
-        PORT: Joi.number()
-        })
-    })
+        PORT: Joi.number(),
+      }),
+    }),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
