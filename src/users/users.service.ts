@@ -26,4 +26,12 @@ export class UsersService {
     await this.userRepository.save(newUser);
     return newUser;
   }
+
+  async getById(id: number) {
+    const user = await this.userRepository.findOne({ id });
+    if (user) {
+      return user;
+    }
+    throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
+  }
 }
