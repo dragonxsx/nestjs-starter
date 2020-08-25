@@ -25,7 +25,7 @@ export class AuthenticationController {
     const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
     response.setHeader('Set-Cookie', cookie);
     user.password = undefined;
-    return user;
+    return response.send(user);
   }
 
   @UseGuards(JwtAuthenticationGuard)
