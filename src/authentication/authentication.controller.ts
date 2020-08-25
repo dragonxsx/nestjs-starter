@@ -1,9 +1,10 @@
-import { Body, Req, Controller, HttpCode, Post, UseGuards, Res } from '@nestjs/common';
+import { Body, Req, Controller, HttpCode, Post, UseGuards, Res, Get } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
 import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import { Response } from 'express';
+import JwtAuthenticationGuard from './jwt-authentication.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -23,6 +24,21 @@ export class AuthenticationController {
     const user = request.user;
     const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
     response.setHeader('Set-Cookie', cookie);
+    user.password = undefined;
+    return user;
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('logout')
+  async logout(@Req() request: RequestWithUser, @Res() response: Response) {
+    response.setHeader('Set-Cookie', this.authenticationService.getCookieForLogout());
+    return response.sendStatus(200);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get()
+  authenticate(@Req() request: RequestWithUser) {
+    const user = request.user;
     user.password = undefined;
     return user;
   }
