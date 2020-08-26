@@ -37,7 +37,6 @@ export class AuthenticationService {
     try {
       const user = await this.userService.getByEmail(email);
       await this.verifyPassword(hashedPassword, user.password);
-      user.password = undefined;
 
       return user;
     } catch (e) {
