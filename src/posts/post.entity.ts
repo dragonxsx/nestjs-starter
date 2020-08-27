@@ -14,11 +14,11 @@ class Post {
   public content: string;
 
   @Column({ nullable: true })
-  @Transform(value => {
-    if (value !== null) {
-      return value;
-    }
-  })
+  // @Transform(value => {
+  //   if (value !== null) {
+  //     return value;
+  //   }
+  // })
   public category: string;
 }
 
