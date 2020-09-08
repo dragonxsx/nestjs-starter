@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
+import User from '../users/user.entity';
 
 
 @Entity()
@@ -20,6 +21,9 @@ class Post {
   //   }
   // })
   public category: string;
+
+  @ManyToOne(() => User, (author: User) => author.posts)
+  public author: User;
 }
 
 export default Post;

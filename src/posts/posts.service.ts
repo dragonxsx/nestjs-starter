@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import Post from './post.entity';
 import { PostNotFoundException } from './exception/postNotFound.exception';
+import User from '../users/user.entity';
 
 @Injectable()
 export class PostsService {
@@ -20,7 +21,7 @@ export class PostsService {
   async getAllPosts() {
     // return this.posts;
 
-    return this.postRepository.find();
+    return this.postRepository.find({relations: ['author']});
   }
 
   async getPostById(id: number) {
@@ -30,7 +31,7 @@ export class PostsService {
     // }
     // throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
 
-    const post = await this.postRepository.findOne(id);
+    const post = await this.postRepository.findOne(id, {relations: ['author']});
     if (post) {
       return post;
     }
@@ -39,7 +40,7 @@ export class PostsService {
     throw new PostNotFoundException(id);
   }
 
-  async createPost(post: CreatePostDto) {
+  async createPost(post: CreatePostDto, user: User) {
     // const newPost = {
     //   id: ++this.lastPostId,
     //   ...post,
@@ -47,7 +48,10 @@ export class PostsService {
     // this.posts.push(newPost);
     // return newPost;
 
-    const newPost = await this.postRepository.create(post);
+    const newPost = await this.postRepository.create({
+      ...post,
+      author: user
+    });
     await this.postRepository.save(newPost);
     return newPost;
   }
@@ -61,7 +65,7 @@ export class PostsService {
     // throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
 
     await this.postRepository.update(id, post);   // Acting as PATCH request
-    const updatedPost = await this.postRepository.findOne(id);
+    const updatedPost = await this.postRepository.findOne(id, {relations: ['author']});
     if (!updatedPost) {
       return updatedPost;
     }
