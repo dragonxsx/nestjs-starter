@@ -37,4 +37,10 @@ export class UsersController {
     const file = await this.userService.getPrivateFile(request.user.id, Number(id));
     file.stream.pipe(res);
   }
+
+  @Get('files')
+  @UseGuards(JwtAuthenticationGuard)
+  async getAllPrivateFiles(@Req() request: RequestWithUser) {
+    return this.userService.getAllPrivateFiles(request.user.id);
+  }
 }

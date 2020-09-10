@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './user.entity';
 import { Repository } from 'typeorm';
@@ -76,5 +76,26 @@ export class UsersService {
     }
 
     throw new UnauthorizedException();
+  }
+
+  async getAllPrivateFiles(userId: number) {
+    const userWithFiles = await this.userRepository.findOne(
+      { id: userId },
+      { relations: ['files'] },
+    );
+
+    if(userWithFiles) {
+      return Promise.all(
+        userWithFiles.files.map(async (file) => {
+          const url = await this.privateFilesService.generatePresignedUrl(file.key);
+          return {
+            ...file,
+            url
+          }
+        })
+      )
+    }
+
+    throw new NotFoundException('User with this id does not exist');
   }
 }
