@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from './user.entity';
 import { Repository } from 'typeorm';
@@ -67,5 +67,14 @@ export class UsersService {
 
   async addPrivateFile(userId: number, imageBuffer: Buffer, fileName: string) {
     return this.privateFilesService.uploadPrivateFile(imageBuffer, userId, fileName);
+  }
+
+  async getPrivateFile(userId: number, fileId: number) {
+    const file = await this.privateFilesService.getPrivateFile(fileId);
+    if (file.info.owner?.id) {
+      return file;
+    }
+
+    throw new UnauthorizedException();
   }
 }
