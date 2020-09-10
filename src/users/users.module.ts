@@ -4,11 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { FilesModule } from '../files/files.module';
 import { UsersController } from './users.controller';
+import { PrivateFilesModule } from '../privateFiles/privateFiles.module';
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([User]),
-    FilesModule
+    FilesModule,
+    PrivateFilesModule
   ],
   providers: [UsersService],
   controllers: [UsersController],

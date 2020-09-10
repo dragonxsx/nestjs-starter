@@ -4,6 +4,7 @@ import User from './user.entity';
 import { Repository } from 'typeorm';
 import CreateUserDto from './dto/createUser.dto';
 import { FilesService } from '../files/files.service';
+import { PrivateFilesService } from '../privateFiles/privateFiles.service';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private readonly filesService: FilesService
+    private readonly filesService: FilesService,
+    private readonly privateFilesService: PrivateFilesService,
   ) {
   }
 
@@ -40,14 +42,14 @@ export class UsersService {
   async addAvatar(userId: number, imageBuffer: Buffer, fileName: string) {
     const user = await this.getById(userId);
 
-    if(user.avatar) {
+    if (user.avatar) {
       await this.deleteAvatar(userId);
     }
 
     const avatar = await this.filesService.uploadPublicFile(imageBuffer, fileName);
     await this.userRepository.update(userId, {
       ...user,
-      avatar
+      avatar,
     });
     return avatar;
   }
@@ -57,9 +59,13 @@ export class UsersService {
     const fileId = user.avatar?.id;
     if (fileId) {
       await this.userRepository.update(userId, {
-        avatar: null
+        avatar: null,
       });
       await this.filesService.deletePublicFile(fileId);
     }
+  }
+
+  async addPrivateFile(userId: number, imageBuffer: Buffer, fileName: string) {
+    return this.privateFilesService.uploadPrivateFile(imageBuffer, userId, fileName);
   }
 }

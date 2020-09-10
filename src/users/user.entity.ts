@@ -3,6 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 import Address from './address.entity';
 import Post from '../posts/post.entity';
 import PublicFile from '../files/publicFile.entity';
+import PrivateFile from '../privateFiles/privateFile.entity';
 
 @Entity()
 class User {
@@ -10,7 +11,7 @@ class User {
   @Expose()
   public id?: number;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   @Expose()
   public email: string;
 
@@ -24,7 +25,7 @@ class User {
 
   @OneToOne(() => Address, {
     eager: true,
-    cascade: true
+    cascade: true,
   })
   @JoinColumn()
   public address: Address;
@@ -36,11 +37,17 @@ class User {
     () => PublicFile,
     {
       eager: true,
-      nullable: true
-    }
+      nullable: true,
+    },
   )
   @JoinColumn()
   public avatar?: PublicFile;
+
+  @OneToMany(
+    () => PrivateFile,
+    (file: PrivateFile) => file.owner,
+  )
+  public files?: PrivateFile[];
 }
 
 export default User;
