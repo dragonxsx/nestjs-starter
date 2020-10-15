@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoriesModule } from './categories/categories.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -23,13 +24,17 @@ import { CategoriesModule } from './categories/categories.module';
         AWS_REGION: Joi.string().required(),
         AWS_ACCESS_KEY_ID: Joi.string().required(),
         AWS_SECRET_ACCESS_KEY: Joi.string().required(),
-        AWS_PUBLIC_BUCKET_NAME: Joi.string().required()
+        AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
+        // ELASTICSEARCH_NODE: Joi.string().required()
+        // ELASTICSEARCH_USERNAME: Joi.string().required(),
+        // ELASTICSEARCH_PASSWORD: Joi.string().required()
       }),
     }),
     DatabaseModule,
     UsersModule,
     AuthenticationModule,
-    CategoriesModule
+    CategoriesModule,
+    SearchModule
   ],
   controllers: [],
   providers: [],
