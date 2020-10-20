@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Transform } from 'class-transformer';
 import User from '../users/user.entity';
 import Category from '../categories/category.entity';
@@ -23,6 +23,7 @@ class Post {
   // })
   public category: string;
 
+  @Index('post_author_index')
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
 
