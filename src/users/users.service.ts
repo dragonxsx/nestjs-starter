@@ -76,7 +76,7 @@ export class UsersService {
           ...user,
           avatar: null,
         });
-        await this.filesService.deletePublicFile(fileId);
+        await this.filesService.deletePublicFileWithQueryRunner(fileId, queryRunner);
         await queryRunner.commitTransaction();
       } catch (error) {
         await queryRunner.rollbackTransaction();
